@@ -2,26 +2,53 @@ import React from 'react'
 
 import { NextPageContext } from 'next';
 import { useRouter } from 'next/router';
-import { Button, Container, Input, Textarea, Stack } from '@chakra-ui/react';
+import { Button, Container, Input, Textarea, Stack, useToast } from '@chakra-ui/react';
+import { Article } from '@/lib/types';
+import { Field, Formik } from 'formik';
+import { createArticle } from '@/api/articles';
 
-const Edit = ({ article }: { article: any }) => {
+const Edit = ({ article }: { article: Article }) => {
   const router = useRouter();
-  const handleEdit = () => {};
+  const toast = useToast()
+
+  const handleEdit = async (data: Article) => {
+    const { status } = await createArticle(data)
+
+    if (status === 200) router.push('/me')
+    else toast({
+        description: "Article could not be edited",
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+    })
+  };
 
   return (
     <Container maxW='1260px'>
-        <form onSubmit={handleEdit}>
-            <Stack spacing={5} my={16}>
-                <Input placeholder='Title' defaultValue={article?.title} />
-                <Input placeholder='Author' defaultValue={article?.author_id} />
-                <Textarea placeholder='Content' rows={50}  defaultValue={article?.snippet} />
-                <Input placeholder='Publication info' defaultValue={article?.publication_info} />
-                <Stack direction="row">
+        <Formik initialValues={{ ...article }} onSubmit={(values) => {handleEdit(values)}}>
+          {({ handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+                <Stack spacing={5} my={16}>
+                  <Field name='title'>
+                    {({ field }: any) => <Input {...field} placeholder='Title' />}
+                  </Field>
+                  <Field name='author'>
+                    {({ field }: any) => <Input {...field} placeholder='Author' />}
+                  </Field>
+                  <Field name='snippet'>
+                    {({ field }: any) => <Textarea {...field} rows={50} placeholder='Content' />}
+                  </Field>
+                  <Field name='publication_info'>
+                    {({ field }: any) => <Input {...field} placeholder='Publication info' />}
+                  </Field>
+                  <Stack direction="row">
                     <Button type="submit" colorScheme='teal' w={32}>Submit</Button>
                     <Button colorScheme='teal' variant="outline" w={32} onClick={() => router.back()}>Cancel</Button>
+                  </Stack>
                 </Stack>
-            </Stack>
-        </form>
+            </form>
+          )}
+        </Formik>
     </Container>
   )
 }

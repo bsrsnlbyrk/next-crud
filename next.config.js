@@ -5,7 +5,7 @@ const nextConfig = {
     HOST_BASE_URL:
       process.env.NODE_ENV === "production"
         ? "https://next-crud-x22b.vercel.app/"
-        : "https://localhost:3000",
+        : "http://localhost:3000",
   },
 };
 

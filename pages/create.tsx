@@ -1,9 +1,11 @@
 import React from 'react'
 
 import { Button, Container, Input, Textarea, Stack } from '@chakra-ui/react';
-import { Field, FieldArrayRenderProps, FieldAttributes, FieldHelperProps, Formik } from 'formik';
+import { Field, Formik } from 'formik';
 import { useToast } from '@chakra-ui/react'
 import { useRouter } from 'next/router';
+import { Article } from '@/lib/types';
+import { createArticle } from '@/api/articles';
 
 const Create = () => {
   const router = useRouter()
@@ -12,17 +14,14 @@ const Create = () => {
   const initialValues = {   
     title: '',
     author: '',
-    content: '',
+    snippet: '',
     publication_info: ''
   }
 
-  const handleCreate = async (data: { [key:string]: string}) => {
-    const response = await fetch('/api/add-article', {
-        method: 'POST',
-        body: JSON.stringify({ ...data, actions: true })
-    })
+  const handleCreate = async (data: Article) => {
+    const { status } = await createArticle(data)
 
-    if (response.status === 200) router.push('/')
+    if (status === 200) router.push('/')
     else toast({
         description: "Article could not be created",
         status: 'error',
@@ -44,7 +43,7 @@ const Create = () => {
                             {({ field }: any) => <Input {...field} placeholder='Author' />}
                         </Field>
                         <Field name='snippet'>
-                            {({ field }: any) => <Textarea {...field} placeholder='Content' />}
+                            {({ field }: any) => <Textarea {...field} rows={50} placeholder='Content' />}
                         </Field>
                         <Field name='publication_info'>
                             {({ field }: any) => <Input {...field} placeholder='Publication info' />}

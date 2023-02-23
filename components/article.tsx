@@ -3,15 +3,15 @@ import React, { useState } from 'react'
 import { Box, Button, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import DeleteArticleModal from './delete-article-modal';
+import { deleteArticle } from '@/api/articles';
+import { useRouter } from 'next/router';
 
 const Article = ({ data }: { data: any }) => {
-  const handleDelete = async () => {
-    await fetch('/api/delete-article', {
-        method: 'POST',
-        body: JSON.stringify({ id: data.id })
-    })
+  const router = useRouter()
 
-    await fetch('/api/get-articles')
+  const handleDelete = async () => {
+    await deleteArticle(data.id)
+    router.push('/me')
   }
 
   return (

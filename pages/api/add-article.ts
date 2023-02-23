@@ -6,7 +6,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 export default async function handler (req: NextApiRequest, res: NextApiResponse) {
     try {
         await addDoc(collection(database, "articles"), JSON.parse(req.body));
-        res.status(200).send('successfully deleted');
+        res.status(200).send('successfully created');
     } catch(error)  {
         res.status(500).send('occured an error');
     }

@@ -3,8 +3,10 @@ import React from 'react'
 import { Button, Container, Heading, Link, Stack } from '@chakra-ui/react'
 
 import ArticlesList from '@/components/articles-list'
+import { fetchArticlesFromMe } from '@/api/articles'
+import { Article } from '@/lib/types'
 
-const Me = ({ articles }: { articles: any }) => {
+const Me = ({ articles }: { articles: Article[] }) => {
 
   return (
     <Container maxW='1260px'>
@@ -23,12 +25,11 @@ const Me = ({ articles }: { articles: any }) => {
 export default Me
 
 export const getStaticProps = async () => {
-    const response = await fetch(`${process.env.HOST_BASE_URL}/api/get-articles`)
-    const articles = await response.json()
+    const response = await fetchArticlesFromMe()
 
     return {
         props: {
-            articles: articles.data
+            articles: response.data
         }
     }
 }
