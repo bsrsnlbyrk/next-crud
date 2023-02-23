@@ -4,3 +4,10 @@ export const fetchArticles = async (query = 'machine-learning') => {
 
     return result;
 }
+
+export const fetchArticlesFromMe = async () => {
+    const response = await fetch('/api/get-articles')
+    const result = await response.json()
+
+    return result;
+}
